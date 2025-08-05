@@ -1,0 +1,19 @@
+const recipeContainer = document.querySelector('.recipe');
+const timeout = function (s) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error(`Request took too long! Timeout after ${s} second`));
+    }, s * 1000);
+  });
+};
+
+// NEW API URL (instead of the one shown in the video)
+// https://forkify-api.jonas.io
+
+///////////////////////////////////////
+
+const showRecipr = async function () {
+  try {
+    const res = await fetch(`https://forkify-api.jonas.io/api/v2/recipes/6d9ef9ee-b170-4b60-8932-4a28d828ea51`);
+  } catch (err) {}
+};
