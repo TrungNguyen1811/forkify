@@ -2,8 +2,7 @@ import * as model from './model.js';
 import recipeView from './view/recipeView.js';
 import searchView from './view/searchView.js';
 import resultsView from './view/resultsView.js';
-import dataItemsJson from '../json/data-items.json';
-
+import paginationView from './view/paginationView.js';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
@@ -20,9 +19,6 @@ const controlRecipes = async function () {
   try {
     const id = window.location.hash.slice(1);
     if (!id) return;
-
-    // const recipes = dataItemsJson.data.recipes;
-    // const selectedRecipe = recipes.find(recipe => recipe.id === id);
 
     recipeView.renderSpinner();
 
@@ -43,15 +39,22 @@ const controlSearchResult = async function () {
 
     await model.loadSearchResult(query);
 
-    resultsView.render(model.state.search.results);
+    resultsView.render(model.getSearchResultsPage());
+    paginationView.render(model.state.search);
   } catch (err) {
     throw err;
   }
 };
 
+const controlPagination = async function (goToPage) {
+  resultsView.render(model.getSearchResultsPage(goToPage));
+  paginationView.render(model.state.search);
+};
+
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
   searchView.addHandlerSearch(controlSearchResult);
+  paginationView.addHandlerClick(controlPagination);
 };
 
 init();
