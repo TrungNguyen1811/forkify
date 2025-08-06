@@ -413,7 +413,7 @@ const controlRecipes = async function () {
     await model.loadRecipe(id);
     _recipeView.default.render(model.state.recipe);
   } catch (err) {
-    _recipeView.default.renderError();
+    _recipeView.default.renderError("We couldn't find that recipe. Please try another one!");
   }
 };
 const init = function () {
@@ -2652,8 +2652,6 @@ var fracty = require('fracty');
 class RecipeView {
   #parentElement = document.querySelector('.recipe');
   #data;
-  #ErrorMessage = "We couldn't find that recipe. Please try another one!";
-  #message = 'Start by searching for a recipe or an ingredient. Have fun!';
   render(data) {
     this.#data = data;
     const markup = this.#generateMarkup();
@@ -2674,7 +2672,7 @@ class RecipeView {
     this.#clear();
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
-  renderError(messages = this.#ErrorMessage) {
+  renderError(messages) {
     const markup = `
       <div class="error">
         <div>
@@ -2685,20 +2683,6 @@ class RecipeView {
         <p>${messages}</p>
       </div>
   `;
-    this.#clear();
-    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-  renderMessage(message = this.#message) {
-    const markup = `
-      <div class="message">
-        <div>
-          <svg>
-            <use href="${_icons.default}#icon-smile"></use>
-          </svg>
-        </div>
-        <p>${message}</p>
-      </div>
-    `;
     this.#clear();
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }

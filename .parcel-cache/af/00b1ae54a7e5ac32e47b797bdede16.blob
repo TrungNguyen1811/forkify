@@ -413,7 +413,7 @@ const controlRecipes = async function () {
     await model.loadRecipe(id);
     _recipeView.default.render(model.state.recipe);
   } catch (err) {
-    _recipeView.default.renderError();
+    alert(err);
   }
 };
 const init = function () {
@@ -2652,8 +2652,6 @@ var fracty = require('fracty');
 class RecipeView {
   #parentElement = document.querySelector('.recipe');
   #data;
-  #ErrorMessage = "We couldn't find that recipe. Please try another one!";
-  #message = 'Start by searching for a recipe or an ingredient. Have fun!';
   render(data) {
     this.#data = data;
     const markup = this.#generateMarkup();
@@ -2671,10 +2669,10 @@ class RecipeView {
       </svg>
     </div>
   `;
-    this.#clear();
+    this.#parentElement.innerHTML = '';
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
-  renderError(messages = this.#ErrorMessage) {
+  renderError() {
     const markup = `
       <div class="error">
         <div>
@@ -2682,24 +2680,10 @@ class RecipeView {
             <use href="${_icons.default}#icon-alert-triangle"></use>
           </svg>
         </div>
-        <p>${messages}</p>
+        <p></p>
       </div>
   `;
-    this.#clear();
-    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-  renderMessage(message = this.#message) {
-    const markup = `
-      <div class="message">
-        <div>
-          <svg>
-            <use href="${_icons.default}#icon-smile"></use>
-          </svg>
-        </div>
-        <p>${message}</p>
-      </div>
-    `;
-    this.#clear();
+    this.#parentElement.innerHTML = '';
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
   addHandlerRender(handler) {

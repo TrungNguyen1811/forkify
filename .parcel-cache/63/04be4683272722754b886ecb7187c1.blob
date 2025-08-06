@@ -2653,7 +2653,7 @@ class RecipeView {
   #parentElement = document.querySelector('.recipe');
   #data;
   #ErrorMessage = "We couldn't find that recipe. Please try another one!";
-  #message = 'Start by searching for a recipe or an ingredient. Have fun!';
+  #message = '';
   render(data) {
     this.#data = data;
     const markup = this.#generateMarkup();
