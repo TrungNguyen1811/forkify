@@ -393,7 +393,8 @@ var model = _interopRequireWildcard(require("./model.js"));
 var _recipeView = _interopRequireDefault(require("./view/recipeView.js"));
 var _searchView = _interopRequireDefault(require("./view/searchView.js"));
 var _resultsView = _interopRequireDefault(require("./view/resultsView.js"));
-var _dataItems = _interopRequireDefault(require("../json/data-items.json"));
+var _paginationView = _interopRequireDefault(require("./view/paginationView.js"));
+var _paginationView = _interopRequireDefault(require("./view/paginationView.js"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
 // NEW API URL (instead of the one shown in the video)
@@ -408,10 +409,6 @@ const controlRecipes = async function () {
   try {
     const id = window.location.hash.slice(1);
     if (!id) return;
-
-    // const recipes = dataItemsJson.data.recipes;
-    // const selectedRecipe = recipes.find(recipe => recipe.id === id);
-
     _recipeView.default.renderSpinner();
     await model.loadRecipe(id);
     _recipeView.default.render(model.state.recipe);
@@ -425,17 +422,31 @@ const controlSearchResult = async function () {
     const query = _searchView.default.getQuery();
     if (!query) return;
     await model.loadSearchResult(query);
-    _resultsView.default.render(model.state.search.results);
+    _resultsView.default.render(model.getSearchResultsPage());
+    _paginationView.default.render(model.state.search);
+    _resultsView.default.render(model.getSearchResultsPage());
+    _paginationView.default.render(model.state.search);
   } catch (err) {
     throw err;
   }
 };
+const controlPagination = async function (goToPage) {
+  _resultsView.default.render(model.getSearchResultsPage(goToPage));
+  _paginationView.default.render(model.state.search);
+};
+const controlPagination = async function (goToPage) {
+  _resultsView.default.render(model.getSearchResultsPage(goToPage));
+  _paginationView.default.render(model.state.search);
+};
 const init = function () {
   _recipeView.default.addHandlerRender(controlRecipes);
   _searchView.default.addHandlerSearch(controlSearchResult);
+  _paginationView.default.addHandlerClick(controlPagination);
+  _paginationView.default.addHandlerClick(controlPagination);
 };
 init();
-},{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./view/recipeView.js":"5f448afcf378a99019c9e817994af38c","./view/searchView.js":"cf48d173dab942cc6a456b509a0fa4e2","../json/data-items.json":"96628ca02f8b95ef158319a7fdec9413","./view/resultsView.js":"00ef579a50ad1d11c73c3cf881928e2e"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
+},{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./view/recipeView.js":"5f448afcf378a99019c9e817994af38c","./view/searchView.js":"cf48d173dab942cc6a456b509a0fa4e2","./view/resultsView.js":"00ef579a50ad1d11c73c3cf881928e2e","./view/paginationView.js":"9140167fe8de071235d11a2fe09cdf6b"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
+},{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./view/recipeView.js":"5f448afcf378a99019c9e817994af38c","./view/searchView.js":"cf48d173dab942cc6a456b509a0fa4e2","./view/resultsView.js":"00ef579a50ad1d11c73c3cf881928e2e","./view/paginationView.js":"9140167fe8de071235d11a2fe09cdf6b"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
 'use strict';
 // TODO: Remove this module from `core-js@4` since it's split to modules listed below
 require('../modules/web.clear-immediate');
@@ -1826,7 +1837,8 @@ module.exports = function (scheduler, hasTimeArg) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.state = exports.loadSearchResult = exports.loadRecipe = void 0;
+exports.state = exports.loadSearchResult = exports.loadRecipe = exports.getSearchResultsPage = void 0;
+exports.state = exports.loadSearchResult = exports.loadRecipe = exports.getSearchResultsPage = void 0;
 var _regeneratorRuntime = require("regenerator-runtime");
 var _config = require("./config");
 var _helpers = require("./helpers");
@@ -1834,7 +1846,12 @@ const state = exports.state = {
   recipe: {},
   search: {
     query: '',
-    results: []
+    results: [],
+    page: 1,
+    resultsPerPage: _config.RES_PER_PAGE
+    results: [],
+    page: 1,
+    resultsPerPage: _config.RES_PER_PAGE
   }
 };
 const loadRecipe = async function (id) {
@@ -1875,6 +1892,20 @@ const loadSearchResult = async function (query) {
   }
 };
 exports.loadSearchResult = loadSearchResult;
+const getSearchResultsPage = function (page = state.search.page) {
+  state.search.page = page;
+  const start = (page - 1) * state.search.resultsPerPage;
+  const end = page * state.search.resultsPerPage;
+  return state.search.results.slice(start, end);
+};
+exports.getSearchResultsPage = getSearchResultsPage;
+const getSearchResultsPage = function (page = state.search.page) {
+  state.search.page = page;
+  const start = (page - 1) * state.search.resultsPerPage;
+  const end = page * state.search.resultsPerPage;
+  return state.search.results.slice(start, end);
+};
+exports.getSearchResultsPage = getSearchResultsPage;
 },{"regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16","./config":"09212d541c5c40ff2bd93475a904f8de","./helpers":"0e8dcd8a4e1c61cf18f78e1c2563655d"}],"e155e0d3930b156f86c48e8d05522b16":[function(require,module,exports) {
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -2644,9 +2675,12 @@ try {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TIMEOUT_SEC = exports.APT_URL = void 0;
+exports.TIMEOUT_SEC = exports.RES_PER_PAGE = exports.APT_URL = void 0;
+exports.TIMEOUT_SEC = exports.RES_PER_PAGE = exports.APT_URL = void 0;
 const APT_URL = exports.APT_URL = 'https://forkify-api.jonas.io/api/v2/recipes';
 const TIMEOUT_SEC = exports.TIMEOUT_SEC = 10;
+const RES_PER_PAGE = exports.RES_PER_PAGE = 10;
+const RES_PER_PAGE = exports.RES_PER_PAGE = 10;
 },{}],"0e8dcd8a4e1c61cf18f78e1c2563655d":[function(require,module,exports) {
 "use strict";
 
@@ -2671,7 +2705,8 @@ const getJSON = async function (url) {
     if (!res.ok) throw new Error(`${data.message} (${res.status})`);
     return data;
   } catch (err) {
-    console.log(err);
+    throw err;
+    throw err;
   }
 };
 exports.getJSON = getJSON;
@@ -3138,7 +3173,6 @@ class SearchView {
   getQuery() {
     const query = this._parentEl.querySelector('.search__field').value;
     this._clearInput();
-    console.log(query);
     return query;
   }
   _clearInput() {
@@ -3152,9 +3186,8 @@ class SearchView {
   }
 }
 var _default = exports.default = new SearchView();
-},{"./View":"f776c090b0b233bdc806fc66c7d180d6"}],"96628ca02f8b95ef158319a7fdec9413":[function(require,module,exports) {
-module.exports = JSON.parse("{\"status\":\"success\",\"data\":{\"recipes\":[{\"publisher\":\"Tasty Meals\",\"ingredients\":[{\"quantity\":2,\"unit\":\"tbsp\",\"description\":\"olive oil\"},{\"quantity\":1,\"unit\":\"\",\"description\":\"chopped onion\"},{\"quantity\":3,\"unit\":\"cloves\",\"description\":\"garlic, minced\"},{\"quantity\":400,\"unit\":\"g\",\"description\":\"diced tomatoes\"},{\"quantity\":1,\"unit\":\"tsp\",\"description\":\"dried basil\"}],\"source_url\":\"http://tastymeals.com/tomato-pasta\",\"image_url\":\"http://forkify-api.herokuapp.com/images/tomato-pasta.jpg\",\"title\":\"Simple Tomato Basil Pasta\",\"servings\":2,\"cooking_time\":20,\"id\":\"5ed6604591c37cdc054bc886\"},{\"publisher\":\"Healthy Eats\",\"ingredients\":[{\"quantity\":2,\"unit\":\"cups\",\"description\":\"quinoa, cooked\"},{\"quantity\":1,\"unit\":\"\",\"description\":\"cucumber, diced\"},{\"quantity\":1,\"unit\":\"\",\"description\":\"tomato, chopped\"},{\"quantity\":0.25,\"unit\":\"cup\",\"description\":\"feta cheese\"},{\"quantity\":2,\"unit\":\"tbsp\",\"description\":\"lemon juice\"}],\"source_url\":\"http://healthyeats.com/quinoa-salad\",\"image_url\":\"http://forkify-api.herokuapp.com/images/quinoa-salad.jpg\",\"title\":\"Mediterranean Quinoa Salad\",\"servings\":4,\"cooking_time\":15,\"id\":\"5ed6604591c37cdc054bc876\"},{\"publisher\":\"All Recipes\",\"ingredients\":[{\"quantity\":500,\"unit\":\"g\",\"description\":\"ground beef\"},{\"quantity\":1,\"unit\":\"packet\",\"description\":\"taco seasoning\"},{\"quantity\":8,\"unit\":\"\",\"description\":\"taco shells\"},{\"quantity\":null,\"unit\":\"\",\"description\":\"shredded lettuce\"},{\"quantity\":null,\"unit\":\"\",\"description\":\"diced tomato\"}],\"source_url\":\"http://allrecipes.com/classic-tacos\",\"image_url\":\"http://forkify-api.herokuapp.com/images/tacos.jpg\",\"title\":\"Classic Ground Beef Tacos\",\"servings\":4,\"cooking_time\":25,\"id\":\"5ed6604591c37cdc054bc882\"},{\"publisher\":\"Vegan Joy\",\"ingredients\":[{\"quantity\":1,\"unit\":\"cup\",\"description\":\"rolled oats\"},{\"quantity\":2,\"unit\":\"tbsp\",\"description\":\"chia seeds\"},{\"quantity\":1,\"unit\":\"cup\",\"description\":\"almond milk\"},{\"quantity\":null,\"unit\":\"\",\"description\":\"sliced banana\"},{\"quantity\":1,\"unit\":\"tbsp\",\"description\":\"maple syrup\"}],\"source_url\":\"http://veganjoy.com/overnight-oats\",\"image_url\":\"http://forkify-api.herokuapp.com/images/overnight-oats.jpg\",\"title\":\"Banana Chia Overnight Oats\",\"servings\":1,\"cooking_time\":5,\"id\":\"57d6604591c37cdc054bc886\"},{\"publisher\":\"Sweet Treats\",\"ingredients\":[{\"quantity\":1.5,\"unit\":\"cups\",\"description\":\"all-purpose flour\"},{\"quantity\":0.5,\"unit\":\"cup\",\"description\":\"unsweetened cocoa powder\"},{\"quantity\":1,\"unit\":\"tsp\",\"description\":\"baking soda\"},{\"quantity\":1,\"unit\":\"cup\",\"description\":\"sugar\"},{\"quantity\":1,\"unit\":\"\",\"description\":\"egg\"}],\"source_url\":\"http://sweettreats.com/chocolate-muffins\",\"image_url\":\"http://forkify-api.herokuapp.com/images/chocolate-muffins.jpg\",\"title\":\"Easy Chocolate Muffins\",\"servings\":6,\"cooking_time\":30,\"id\":\"5ed6604581c37cdc054bc886\"}]}}");
-},{}],"00ef579a50ad1d11c73c3cf881928e2e":[function(require,module,exports) {
+},{"./View":"f776c090b0b233bdc806fc66c7d180d6"}],"00ef579a50ad1d11c73c3cf881928e2e":[function(require,module,exports) {
+},{"./View":"f776c090b0b233bdc806fc66c7d180d6"}],"00ef579a50ad1d11c73c3cf881928e2e":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3162,7 +3195,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _View = _interopRequireDefault(require("./View.js"));
-var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 class ResultsView extends _View.default {
   _parentElement = document.querySelector('.results');
@@ -3188,6 +3220,70 @@ class ResultsView extends _View.default {
   }
 }
 var _default = exports.default = new ResultsView();
+},{"./View.js":"f776c090b0b233bdc806fc66c7d180d6"}],"9140167fe8de071235d11a2fe09cdf6b":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _View = _interopRequireDefault(require("./View.js"));
+var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+class PaginationView extends _View.default {
+  _parentElement = document.querySelector('.pagination');
+  addHandlerClick(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const btn = e.target.closest('.btn--inline');
+      if (!btn) return;
+      const goToPage = +btn.dataset.goto;
+      console.log('goToPage', goToPage);
+      handler(goToPage);
+    });
+  }
+  _generateMarkup() {
+    const curPage = this._data.page;
+    console.log('cur', curPage);
+    const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
+    if (curPage === 1 && numPages > 1) {
+      return `
+        <button data-goto="${curPage + 1}" class="btn--inline pagination__btn--next">
+          <span>Page ${curPage + 1}</span>
+          <svg class="search__icon">
+            <use href="${_icons.default}#icon-arrow-right"></use>
+          </svg>
+        </button>
+      `;
+    }
+    if (curPage === numPages && numPages > 1) {
+      return `
+        <button data-goto="${curPage - 1}" class="btn--inline pagination__btn--prev">
+          <svg class="search__icon">
+            <use href="${_icons.default}#icon-arrow-left"></use>
+          </svg>
+          <span>Page ${curPage - 1}</span>
+        </button>
+      `;
+    }
+    if (curPage < numPages) {
+      return `
+        <button data-goto="${curPage - 1}" class="btn--inline pagination__btn--prev">
+          <svg class="search__icon">
+            <use href="${_icons.default}#icon-arrow-left"></use>
+          </svg>
+          <span>Page ${curPage - 1}</span>
+        </button>
+        <button data-goto="${curPage + 1}" class="btn--inline pagination__btn--next">
+          <span>Page ${curPage + 1}</span>
+          <svg class="search__icon">
+            <use href="${_icons.default}#icon-arrow-right"></use>
+          </svg>
+        </button>
+      `;
+    }
+  }
+}
+var _default = exports.default = new PaginationView();
 },{"./View.js":"f776c090b0b233bdc806fc66c7d180d6","url:../../img/icons.svg":"7ca62492466581b2a045bd53f3e08b6c"}]},{},["10cc41c9d8b447677e09ab0f3cebbb9a","eb1edab94c864275c752648564408fe3","175e469a7ea7db1c8c0744d04372621f"], null)
 
 //# sourceMappingURL=controller.1b5c2c9d.js.map

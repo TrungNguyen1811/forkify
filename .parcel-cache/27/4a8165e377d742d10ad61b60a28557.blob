@@ -1,0 +1,27 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+class PaginationView {
+  _parentElement = document.querySelector('.pagination');
+  _generateMarkup() {
+    const numberPages = this._data;
+    return `
+      <button class="btn--inline pagination__btn--prev">
+        <svg class="search__icon">
+          <use href="src/img/icons.svg#icon-arrow-left"></use>
+        </svg>
+        <span>Page 1</span>
+      </button>
+      <button class="btn--inline pagination__btn--next">
+        <span>Page 3</span>
+        <svg class="search__icon">
+          <use href="src/img/icons.svg#icon-arrow-right"></use>
+        </svg>
+      </button>
+    `;
+  }
+}
+var _default = exports.default = new PaginationView();
