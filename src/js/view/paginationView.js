@@ -11,15 +11,12 @@ class PaginationView extends View {
       if (!btn) return;
 
       const goToPage = +btn.dataset.goto;
-      console.log('goToPage', goToPage);
-
       handler(goToPage);
     });
   }
 
   _generateMarkup() {
     const curPage = this._data.page;
-    console.log('cur', curPage);
     const numPages = Math.ceil(
       this._data.results.length / this._data.resultsPerPage
     );
