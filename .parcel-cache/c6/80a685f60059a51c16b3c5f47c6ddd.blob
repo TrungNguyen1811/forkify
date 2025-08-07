@@ -1,7 +1,0 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.APT_URL = void 0;
-const APT_URL = exports.APT_URL = 'https://forkify-api.jonas.io/api/v2/recipes';
