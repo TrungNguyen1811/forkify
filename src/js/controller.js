@@ -76,6 +76,16 @@ const controlAddBookmark = function () {
   bookmarksView.render(model.state.bookmarks);
 };
 
+const controlDeleteAllBookmarks = function () {
+  model.clearBookmarks();
+  if (model.state.bookmarks.length === 0) {
+    bookmarksView.renderMessage('No bookmarks yet. Start adding some!');
+  } else {
+    bookmarksView.render(model.state.bookmarks);
+  }
+  recipeView.update(model.state.recipe);
+};
+
 const controlBookmark = function () {
   bookmarksView.render(model.state.bookmarks);
 };
@@ -110,6 +120,7 @@ const init = function () {
   searchView.addHandlerSearch(controlSearchResult);
   paginationView.addHandlerClick(controlPagination);
   bookmarksView.addHandlerRender(controlBookmark);
+  bookmarksView.addHandlerDeleteAllBookmarks(controlDeleteAllBookmarks);
   addRecipeView.addHandlerUpload(controlAddRecipe);
 };
 
