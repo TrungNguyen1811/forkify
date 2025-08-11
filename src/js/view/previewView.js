@@ -8,13 +8,15 @@ class PreviewView extends View {
 
     return `
           <li class="preview">
-            <a class="preview__link ${
+            <a class="preview__link search-results__link ${
               this._data.id === id ? 'preview__link--active' : ''
             }" href="#${this._data.id}">
               <figure class="preview__fig">
                 <img src="${this._data.image}" alt="${this._data.title}" />
               </figure>
-              <div class="preview__data">
+              <div class="preview__data ${
+                this._data.sidebarClosed ? 'hidden' : ''
+              }">
                 <h4 class="preview__title">${this._data.title}</h4>
                 <p class="preview_publisher">${this._data.publisher}</p>
                 <div class="preview__user-generated ${

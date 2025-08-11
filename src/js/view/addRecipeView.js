@@ -12,6 +12,7 @@ class AddRecipeView extends View {
 
   constructor() {
     super();
+    this._originalMarkup = this._parentElement.outerHTML;
     this._addHandlerShowWindow();
     this._addHandlerHideWindow();
   }
@@ -22,7 +23,10 @@ class AddRecipeView extends View {
   }
 
   _addHandlerShowWindow() {
-    this._btnOpen.addEventListener('click', this.toggleWindow.bind(this));
+    this._btnOpen.addEventListener('click', () => {
+      this.toggleWindow();
+      this._resetForm();
+    });
   }
 
   _addHandlerHideWindow() {
@@ -30,11 +34,25 @@ class AddRecipeView extends View {
     this._overlay.addEventListener('click', this.toggleWindow.bind(this));
   }
 
-  addHandlerUpload(handler) {
-    this._parentElement.addEventListener('submit', function (e) {
-      e.preventDefault();
+  _resetForm() {
+    const newForm = document
+      .createRange()
+      .createContextualFragment(this._originalMarkup).firstElementChild;
 
-      const dataArr = [...new FormData(this)];
+    this._window.querySelector('.upload').replaceWith(newForm);
+
+    this._parentElement = newForm;
+
+    if (this._uploadHandler) {
+      this.addHandlerUpload(this._uploadHandler);
+    }
+  }
+
+  addHandlerUpload(handler) {
+    this._uploadHandler = handler;
+    this._parentElement.addEventListener('submit', e => {
+      e.preventDefault();
+      const dataArr = [...new FormData(this._parentElement)];
       const data = Object.fromEntries(dataArr);
       handler(data);
     });

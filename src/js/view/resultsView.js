@@ -16,7 +16,10 @@ class ResultsView extends View {
   _copyRight = document.querySelector('.copyright');
 
   _generateMarkup() {
-    return this._data.map(result => previewView.render(result, false)).join('');
+    const sidebarClosed = this._sidebarLeft.classList.contains('hidden');
+    return this._data
+      .map(result => previewView.render({ ...result, sidebarClosed }, false))
+      .join('');
   }
 
   handlerClickSidebarLeft() {
@@ -63,6 +66,8 @@ class ResultsView extends View {
 
   handlerClickPreviewLinks() {
     this._parentElement.addEventListener('click', e => {
+      if (!e.target.closest('.search-results')) return;
+
       const link = e.target.closest('.preview__link');
       if (!link) return;
 
