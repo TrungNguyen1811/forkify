@@ -82,7 +82,7 @@ const persistBookmarks = function () {
 
 export const addBookmark = function (recipe) {
   state.bookmarks.push(recipe);
-
+  console.log(state.bookmarks);
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
   persistBookmarks();
 };
@@ -102,8 +102,11 @@ const init = function () {
 
 init();
 
-const clearBookmarks = function () {
-  localStorage.clear('bookmarks');
+export const clearBookmarks = function () {
+  localStorage.setItem('bookmarks', JSON.stringify([]));
+  state.bookmarks = [];
+  if (state.recipe) state.recipe.bookmarked = false;
+  persistBookmarks();
 };
 
 export const uploadRecipe = async function (newRecipe) {

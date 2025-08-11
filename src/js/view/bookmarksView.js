@@ -10,10 +10,28 @@ class BookmarksView extends View {
     window.addEventListener('load', handler());
   }
 
+  addHandlerDeleteAllBookmarks(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const btn = e.target.closest('.btn--delete-all-bookmarks');
+      if (!btn) return;
+      handler();
+    });
+  }
+
   _generateMarkup() {
-    return this._data
-      .map(bookmark => previewView.render(bookmark, false))
-      .join('');
+    if (this._data.length === 0) {
+      return `<div class="message">${this._errorMessage}</div>`;
+    }
+
+    return `
+    <div class=" btn--delete-all-bookmarks">
+      <p>Clear all bookmarks
+      </p>
+    </div>
+      ${this._data
+        .map(bookmark => previewView.render(bookmark, false))
+        .join('')}
+    `;
   }
 }
 
