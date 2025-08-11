@@ -2,6 +2,69 @@
   padding: 3rem 0;
   display: flex;
   flex-direction: column;
+  position: relative;
+  min-height: 100vh;
+  height: auto;
+  justify-content: space-between;
+
+  .sidebar-mobile {
+    display: none;
+  }
+
+  @media only screen and (max-width: $bp-small) {
+    position: absolute;
+    background-color: #fff;
+    width: 12rem;
+    transition: all 0.3s ease, opacity 0.3s ease;
+    z-index: 10;
+    top: 10rem;
+
+    .sidebar-mobile {
+      display: block;
+      height: 7rem;
+    }
+    &.active {
+      width: 48rem;
+      height: auto;
+    }
+  }
+}
+
+.heading-search {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  color: $color-grey-dark-1;
+
+  .hidden {
+    display: none;
+  }
+}
+
+.sidebar-icon {
+  width: 3rem;
+  height: 3rem;
+  color: #f38e82;
+}
+
+.sidebar-left {
+  position: absolute;
+  right: 1rem;
+  top: 3.5rem;
+
+  .hidden {
+    display: none;
+  }
+}
+
+.sidebar-right {
+  position: absolute;
+  left: 5rem;
+  top: 3.5rem;
+
+  .hidden {
+    display: none;
+  }
 }
 
 .results {
@@ -38,5 +101,24 @@
   .twitter-link:link,
   .twitter-link:visited {
     color: $color-grey-dark-2;
+  }
+}
+
+@media screen and (max-width: $bp-small) {
+  .copyright {
+    display: none;
+
+    &.show-on-mobile {
+      display: block !important;
+      align-self: end;
+    }
+  }
+
+  .pagination {
+    display: none; // mobile mặc định ẩn
+
+    &.show-on-mobile {
+      display: block !important; // khi mở panel thì hiện
+    }
   }
 }

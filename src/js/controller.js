@@ -2,6 +2,7 @@ import * as model from './model.js';
 import recipeView from './view/recipeView.js';
 import searchView from './view/searchView.js';
 import resultsView from './view/resultsView.js';
+import errorView from './view/errorView.js';
 import paginationView from './view/paginationView.js';
 import bookmarksView from './view/bookmarksView.js';
 import addRecipeView from './view/addRecipeView.js';
@@ -76,6 +77,16 @@ const controlAddBookmark = function () {
   bookmarksView.render(model.state.bookmarks);
 };
 
+const controlDeleteAllBookmarks = function () {
+  model.clearBookmarks();
+  if (model.state.bookmarks.length === 0) {
+    bookmarksView.renderMessage('No bookmarks yet. Start adding some!');
+  } else {
+    bookmarksView.render(model.state.bookmarks);
+  }
+  recipeView.update(model.state.recipe);
+};
+
 const controlBookmark = function () {
   bookmarksView.render(model.state.bookmarks);
 };
@@ -106,9 +117,11 @@ const init = function () {
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerAddBookmark(controlAddBookmark);
+  resultsView.initSidebarHandlers();
   searchView.addHandlerSearch(controlSearchResult);
   paginationView.addHandlerClick(controlPagination);
   bookmarksView.addHandlerRender(controlBookmark);
+  bookmarksView.addHandlerDeleteAllBookmarks(controlDeleteAllBookmarks);
   addRecipeView.addHandlerUpload(controlAddRecipe);
 };
 

@@ -4,6 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 2rem;
 
   &__logo {
     margin-left: 4rem;
@@ -101,6 +102,23 @@
     &:hover {
       background-color: $color-grey-light-2;
     }
+
+    @media only screen and (max-width: $bp-small) {
+      span {
+        display: none;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: $bp-small) {
+  .header {
+    width: calc(100vw);
+  }
+  .nav {
+    justify-self: end;
+    margin-left: auto;
+    margin-right: 0px;
   }
 }
 

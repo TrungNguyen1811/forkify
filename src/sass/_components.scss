@@ -1,6 +1,6 @@
 %btn {
   background-image: $gradient;
-  border-radius: 10rem;
+  border-radius: 20rem;
   border: none;
   text-transform: uppercase;
   color: #fff;
@@ -33,6 +33,19 @@
     height: 2.25rem;
     width: 2.25rem;
     fill: currentColor;
+  }
+
+  @media screen and (max-width: $bp-small) {
+    font-size: 1.4rem;
+    font-weight: 600;
+    padding: 1.25rem 2.25rem;
+    text-decoration: none;
+
+    svg {
+      height: 1.75rem;
+      width: 1.75rem;
+      fill: currentColor;
+    }
   }
 }
 
@@ -150,6 +163,16 @@
   &:not(:last-child) {
     margin-right: 0.3rem;
   }
+}
+
+.btn--delete-all-bookmarks {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  color: $color-primary;
+  font-size: 1.4rem;
+  margin-right: 3rem;
+  padding: 0.5rem 1.5rem;
 }
 
 .heading--2 {

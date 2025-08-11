@@ -68,4 +68,16 @@ body {
     margin: 0;
     border-radius: 0;
   }
+
+  @media only screen and (max-width: $bp-small) {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+
+    grid-template-rows: 10rem auto;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'head'
+      'recipe';
+  }
 }
