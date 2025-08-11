@@ -1,6 +1,6 @@
 %btn {
   background-image: $gradient;
-  border-radius: 10rem;
+  border-radius: 20rem;
   border: none;
   text-transform: uppercase;
   color: #fff;
@@ -33,6 +33,19 @@
     height: 2.25rem;
     width: 2.25rem;
     fill: currentColor;
+  }
+
+  @media screen and (max-width: $bp-small) {
+    font-size: 1.4rem;
+    font-weight: 600;
+    padding: 1.25rem 2.25rem;
+    text-decoration: none;
+
+    svg {
+      height: 1.75rem;
+      width: 1.75rem;
+      fill: currentColor;
+    }
   }
 }
 
