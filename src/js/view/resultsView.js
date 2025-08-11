@@ -1,8 +1,5 @@
-import { _ } from 'core-js';
 import View from './View.js';
 import previewView from './previewView.js';
-import { API_URL } from '../config.js';
-
 class ResultsView extends View {
   _parentElement = document.querySelector('.results');
   _errorMessage = "We couldn't find that recipe. Please try another one!";
