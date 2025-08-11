@@ -23,6 +23,11 @@
     border: none;
     background: none;
   }
+
+  @media screen and (max-width: $bp-small) {
+    width: 90vw;
+    padding: 4rem 3rem;
+  }
 }
 
 .overlay {
@@ -81,6 +86,11 @@
       grid-column: 1 / span 2;
       justify-self: center;
       margin-top: 1rem;
+    }
+
+    @media screen and (max-width: $bp-small) {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
     }
   }
 

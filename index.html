@@ -9,9 +9,8 @@
       rel="stylesheet"
     />
     <link rel="shortcut icon" href="src/img/favicon.png" type="image/x-icon" />
-
     <link rel="stylesheet" href="src/sass/main.scss" />
-    <script defer src="src/js/controller.js"></script>
+    <script type="module" src="src/js/controller.js"></script>
 
     <title>forkify // Search over 1,000,000 recipes</title>
   </head>
@@ -85,6 +84,15 @@
       </header>
 
       <div class="search-results">
+        <div class='sidebar-mobile'>
+          <h2 class="heading-search hidden">Search results</h2>
+          <svg class='sidebar-icon sidebar-left hidden'>
+            <use href='src/img/sidebar-left.svg'></use>
+          </svg>
+          <svg class='sidebar-icon sidebar-right'>
+            <use href='src/img/sidebar-right.svg'></use>
+          </svg>
+        </div>
         <ul class="results">
           <!-- 
           <li class="preview">
@@ -107,7 +115,7 @@
         </ul>
 
         <div class="pagination">
-          <button class="btn--inline pagination__btn--prev">
+          <!-- <button class="btn--inline pagination__btn--prev">
             <svg class="search__icon">
               <use href="src/img/icons.svg#icon-arrow-left"></use>
             </svg>
@@ -118,7 +126,7 @@
             <svg class="search__icon">
               <use href="src/img/icons.svg#icon-arrow-right"></use>
             </svg>
-          </button>
+          </button> -->
         </div>
 
         <p class="copyright">
